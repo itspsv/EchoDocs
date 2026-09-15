@@ -6,6 +6,9 @@ Upload a document. Ask questions about it out loud. Get spoken answers grounded 
 
 Built for the AssemblyAI Voice Agent Hackathon.
 
+![EchoDocs voice RAG assistant interface.](images/Chat_UI.png)
+
+
 ## How it works
 
 1. Load a document. Upload a PDF or text file, or paste a URL.
