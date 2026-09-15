@@ -1,0 +1,34 @@
+// EchoDocs: answers questions about whatever document is currently loaded
+// (a file, a pasted URL, or pasted text — the backend treats all three the
+// same), grounded in retrieval over it. retrieve_context has no "http"
+// block, so AssemblyAI sends the tool.call to whoever holds the session
+// instead of calling it itself; deployment/browser/app.js answers it by
+// querying the local RAG backend (rag_backend/server.py). That means this
+// agent only works in the browser deployment, not on a phone call —
+// publish.py warns about this.
+// https://www.assemblyai.com/docs/voice-agents/voice-agent-api/tools/client-side-tools
+{
+  "name": "EchoDocs",
+
+  "system_prompt": "You are EchoDocs, a voice assistant that answers questions about a document currently loaded into this session — it may have gotten there as an uploaded file, a pasted URL, or pasted text; you have no way to tell which, it makes no difference, and you should never ask or assume. For every question about the document's content, call retrieve_context first with a short search query capturing what they want to know, then answer using only the passages that come back; never refuse or claim you can't access something before calling it. Speak as if you already knew the answer; never mention retrieving, searching, context, or tools. If the retrieved passages don't contain the answer, say plainly that the document doesn't cover it, don't guess or use outside knowledge. Keep replies to one or two short spoken sentences. No exclamation marks, no visual formatting.",
+
+  "greeting": "Load a document above — a file or a URL — then ask me anything about it.",
+
+  "voice": { "voice_id": "anna" },
+
+  "tools": [
+    {
+      "name": "retrieve_context",
+      "description": "Search the document currently loaded into this session (uploaded file, pasted URL, or pasted text — all handled the same way) for passages relevant to the user's question. Always call this before answering, or before saying you can't, answer any question about the document's content.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": { "type": "string", "description": "A short search query capturing what the user wants to know." }
+        },
+        "required": ["query"]
+      },
+      "execution_mode": "hold",
+      "timeout_seconds": 15
+    }
+  ]
+}
